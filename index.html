@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Campaign</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" />
+    <style>
+        html {
+            height: 100%;
+        }
+        
+        body * {
+            transform: none !important;
+        }
+
+        body {
+            --bg: linear-gradient(135deg, #e9f5ff, #fef9ff);
+            --text: #000;
+            --card-bg: #ffffffcc;
+            background: var(--bg);
+            transition: 0.3s;
+            overflow-x: hidden;
+        }
+        
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: -1;
+        }
+
+        .shape1 {
+            width: 300px;
+            height: 300px;
+            background: #9ad0ff;
+            top: -80px;
+            left: -80px;
+        }
+        
+        .shape2 {
+            width: 250px;
+            height: 250px;
+            background: #ffc4e1;
+            bottom: -60px;
+            right: -50px;
+        }
+        
+        .gallery-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            backdrop-filter: blur(8px);
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .gallery-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .media-box {
+            overflow: hidden;
+            border-radius: 12px;
+            position: relative;
+        }
+        
+        .media-box img,
+        .media-box video {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform .4s ease;
+        }
+        
+        .media-box:hover img {
+            transform: scale(1.06);
+        }
+        
+        .loader {
+            position: absolute;
+            top: 45%;
+            left: 45%;
+            width: 40px;
+            height: 40px;
+            border: 5px solid #ccc;
+            border-top-color: #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 10;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (min-width: 768px) {
+            .masonry { 
+                column-count: 3; 
+                column-gap: 18px; 
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .floating-btn {
+                position: fixed;
+                bottom: 15px;
+                left: 50%;
+                transform: translateX(-50%);
+                right: auto;
+                padding: 12px 18px;
+                font-size: 14px;
+                max-width: 70%;
+                text-align: center;
+                z-index: 999999 !important;
+            }
+        }
+
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 999999 !important;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+        }
+        
+        .modal-box {
+            background: #fff;
+            padding: 25px;
+            width: 90%;
+            max-width: 420px;
+            border-radius: 10px;
+            position: relative;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-box h3 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .modal-box input, .modal-box textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .close-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .success-message {
+            display: none;
+            text-align: center;
+            color: green;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .btn-loading::after {
+            content: "";
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            width: 16px;
+            height: 16px;
+            margin-top: -8px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="container py-4">
+        <div class="masonry">
+            <div class="gallery-card mb-3">
+                <div class="media-box">
+                    <a href="media/poster-1.jpg" data-lightbox="gallery">
+                        <img src="media/poster-1.jpg" alt="Poster 1">
+                    </a>
+                </div>
+            </div>
+            <div class="gallery-card mb-3">
+                <div class="media-box">
+                    <a href="media/poster-2.jpg" data-lightbox="gallery">
+                        <img src="media/poster-2.jpg" alt="Poster 2">
+                    </a>
+                </div>
+            </div>
+            <div class="gallery-card mb-3">
+                <div class="media-box">
+                    <div class="loader" id="vidLoader1"></div>
+                    <video class="myVideo"
+                        src="media/video-1.mp4"
+                        poster="media/poster-1.jpg"
+                        muted
+                        playsinline
+                        controls>
+                    </video>
+                </div>
+            </div>
+        </div>
+        <div class="masonry">
+            <div class="gallery-card mb-3">
+                <div class="media-box">
+                    <div class="loader" id="vidLoader2"></div>
+                    <video class="myVideo"
+                        src="media/video-2.mp4"
+                        poster="media/poster-2.jpg"
+                        muted
+                        playsinline
+                        controls>
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="feedbackBtn" class="floating-btn">Submit Response</button>
+    <div id="feedbackModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Submit Your Response</h3>
+            <form id="feedbackForm">
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+                <button type="submit" class="submit-btn">Send</button>
+                <button type="button" class="close-btn" id="closeModal">Close</button>
+            </form>
+    
+            <div id="successMsg" class="success-message">Submitted Successfully!</div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox-plus-jquery.min.js"></script>
+    <script>
+        document.querySelectorAll(".myVideo").forEach((vid, i) => {
+            const loader = document.getElementById("vidLoader" + (i + 1));
+            vid.oncanplay = () => loader.style.display = "none";
+        });
+
+        const videos = document.querySelectorAll(".myVideo");
+
+        videos.forEach(v => {
+            v.addEventListener("play", () => {
+                videos.forEach(other => {
+                    if (other !== v) other.pause();
+                });
+            });
+        });
+
+        if (videos.length >= 2) {
+            videos[0].onended = () => {
+                videos[1].play();
+                videos[1].scrollIntoView({ behavior: "smooth", block: "center" });
+            };
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const video = entry.target;
+
+                if (entry.isIntersecting) {
+                    const anyPlaying = [...videos].some(v => !v.paused && v !== video);
+
+                    if (!anyPlaying) {
+                        video.play();
+                    }
+                } else {
+                    video.pause();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        videos.forEach(v => observer.observe(v));
+    </script>
+    <script>
+        const modal = document.getElementById("feedbackModal");
+        const openBtn = document.getElementById("feedbackBtn");
+        const closeBtn = document.getElementById("closeModal");
+        const form = document.getElementById("feedbackForm");
+        const successMsg = document.getElementById("successMsg");
+    
+        // Open modal
+        openBtn.onclick = () => modal.style.display = "flex";
+    
+        // Close modal
+        closeBtn.onclick = () => modal.style.display = "none";
+    
+        // Submit form via AJAX
+        form.onsubmit = function(e) {
+            e.preventDefault();
+        
+            const submitBtn = form.querySelector(".submit-btn");
+        
+            // Add loading state
+            submitBtn.classList.add("btn-loading");
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Sending...";
+        
+            fetch("send_mail.php", {
+                method: "POST",
+                body: new FormData(form)
+            })
+            .then(res => res.text())
+            .then(data => {
+                // Remove loader
+                submitBtn.classList.remove("btn-loading");
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Send";
+        
+                if (data === "OK") {
+                    form.reset();
+                    successMsg.style.display = "block";
+        
+                    setTimeout(() => {
+                        successMsg.style.display = "none";
+                        modal.style.display = "none";
+                    }, 1500);
+                }
+            })
+            .catch(() => {
+                submitBtn.classList.remove("btn-loading");
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Send";
+            });
+        };
+
+    </script>
+</body>
+</html>
